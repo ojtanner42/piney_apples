@@ -43,6 +43,8 @@ beside the save (as `settings.toml` does).
 12. Skipping in-engine event scenes (the script run fast, its flags all
     set).
 13. Quick save and load anywhere.
+14. The second list (below), placed into the steps above as each is
+    designed.
 
 The field map's changes come later.
 
@@ -56,7 +58,96 @@ and a list of the story's mail; text size and window opacity; the assists
 (more experience or gold, no traps, easier Data Drain); anything taken from
 .hack//G.U. Last Recode (the four parts as one continuous game, a higher
 level cap, a photo mode); 60 fps with frames interpolated; skipping the
-intro and the logos.
+intro and the logos. From the second list: the Chaos Gate's word
+autocomplete; fountains healing with no menu; a symbol's or statue's text
+shortened; what a magic portal holds hinted; the summary after a fight; the
+victory pose shortened; the members' chatter set less often; a trade log;
+list cursors wrapping round; vibration strength; a theatre of the event
+scenes; a screenshot key.
+
+## The second list
+
+Agreed 2026-10-08. *check*: the game may already do some of it; look first.
+
+The ALTIMIT desktop:
+- Connect into the Root Town and server last used, past the login's steps.
+- A quick save on the desktop to the slot last used, past the slot list.
+- Mail sorted by sender or date; all marked read.
+- Old mail archived or deleted.
+- News and the BBS open on the newest unread post.
+- A save slot shows where, Kite's level, the party, the play time, the part
+  (*check*).
+- The card backed up before each save, the last few kept.
+- The card exported to a PCSX2 memory card (*check*: import is there).
+
+The Chaos Gate and travel:
+- An area's level, element and field type shown before the warp (*check*).
+- A random area word within a level range chosen.
+- Gating out from anywhere in a field with no foe near.
+- The dungeon's stairs and floor change shortened or skipped.
+- The Grunty summoned and left faster, and ridden faster.
+
+The field and the dungeon:
+- Breakable objects broken on one press, past the "break it?" menu.
+- Untrapped chests opened on one press, past the menu.
+- The dungeon's floor number on screen.
+
+Combat:
+- "Triangle: Data Drain" shown when a foe's Protect Break opens, past the
+  menu.
+- How long a Protect Break lasts, shown.
+- The conditions' icons with their time left.
+- Cross held keeps attacking.
+- The next foe targeted after a kill.
+- The camera turned to the target in a fight.
+- A skill's range shown while its target is chosen.
+- A level up's stat changes listed.
+- The members' HP and SP as numbers in CHAT.
+- A log of the chat and the system's messages, to scroll back.
+
+ALTIMIT's News as the players' own web sites:
+- A bestiary filled in as foes are met: level, element, weaknesses, drains.
+- An item book filled in as items are had: effects, where found, trade
+  value.
+- Every item a Data Drain gives, and those drained.
+- A completion page: areas visited, rare items, members met.
+
+Items and equipment:
+- Items' descriptions with their numbers (HP, SP, stats).
+- "Heal the party" outside a fight, with the cheapest items that do it.
+- Items marked favourite or locked: not sold or traded by accident.
+- "Sell all junk", sparing the locked and those a trade wants.
+- A shop shows how many are held and whether one is worn.
+- The compare shows the skills a piece gives and those lost (in .hack the
+  skills are the equipment's).
+- Kite's best equipment for a stat chosen (attack, defence, an element).
+- The item box sorted.
+- An item given to a member from the shop.
+
+Members and the party:
+- Any member with an address invited from the gate or PERSONAL (*check*).
+- A member's level and equipment seen before the invitation.
+- Gifts given and friendship's progress, per member.
+
+The Grunty:
+- Each Grunty's hunger, foods eaten and evolution's progress.
+
+Menus and controls:
+- A held direction scrolls faster the longer it is held.
+- L1 / R1 page every long list (*check*).
+- The routine "are you sure?" prompts skipped (a setting per kind).
+- The mouse and keyboard in the menus.
+- Button marks for Xbox and Nintendo pads, drawn in the game's style (new
+  art, the plan's one exception).
+- A pad plugged in during play taken up at once.
+
+Event scenes:
+- The last lines read again (a backlog).
+- A pause in the in-engine scenes.
+
+Sound and the system:
+- Voices' and battle chatter's volumes apart.
+- A pause when the window loses focus.
 
 ## The field helpers
 

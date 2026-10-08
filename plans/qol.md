@@ -9,13 +9,81 @@ beside the save (as `settings.toml` does).
 ## Order
 
 1. Baseline: `cargo build`, the tests that need no disc.
-2. Game speed (hold or toggle 2x / 3x) and faster text and menus.
+2. Pace: game speed (hold or toggle 2x / 4x), instant or faster text with
+   auto-advance, faster menu animations, shorter load fades, the menus'
+   cursors remembered.
 3. The battle hotbar (below).
-4. Autosave into a slot of its own: on entering a Root Town, on gating out.
-5. Skipping in-engine event scenes (the script run fast, its flags all set).
-6. Quick save and load anywhere.
+4. Saving: autosave into slots of its own (rotating) on entering a Root
+   Town and on gating out; saving from a Root Town without logging out.
+5. The field helpers: the auto Fairy's Orb, the auto Fortune Wire, the
+   sprint toggle (below).
+6. Shops and items: buying and selling in quantities, equipment compared,
+   items sorted and filtered, who can equip a piece shown, the item box
+   reached from the field (a setting).
+7. Combat: target cycling on the right stick with the target's health,
+   damage numbers (on / off, larger), party AI presets, the bracelet's
+   infection as a number.
+8. Dungeons and the gate: a floor's chests and portals counted, a run toggle
+   and faster walking in the Root Towns, back to the Root Town from a
+   cleared dungeon's last room, the Chaos Gate's recent and favourite words.
+9. Members: friendship levels shown.
+10. Presentation: widescreen and resolution (in part already:
+    `--render-scale`), full button remapping.
+11. Skipping in-engine event scenes (the script run fast, its flags all
+    set).
+12. Quick save and load anywhere.
 
 The field map's changes come later.
+
+### Not to be made
+
+Decided against (2026-10-08): the party's status always on screen with a
+low-HP warning; treasure, portals and the goal marked on the maps (the auto
+Fairy's Orb stands in); a gate history of cleared areas and treasure left;
+a "what next" hint from the event flags; an unread-mail badge in the field
+and a list of the story's mail; text size and window opacity; the assists
+(more experience or gold, no traps, easier Data Drain).
+
+## The field helpers
+
+All three are settings, on by default in the port's settings, and each
+goes through the game's own use of the item, so what it does, costs and
+shows is the game's.
+
+### The auto Fairy's Orb
+
+On entering a field, or a new floor of a dungeon, with a Fairy's Orb (13/2)
+in Kite's items and the map not yet whole, one is used as from TARGET:
+`ccUseItemRequest(plw, -, 13/2)`, its sound, its line, `ShowMap` until it
+answers (map.md "ShowMap: the Fairy's Orb"), one orb taken.
+
+- Not where it would be wasted: a field already shown (`mapFlag` set), a
+  dungeon floor already seen whole, a town, an event area with a story map
+  of its own (`ShowMap` answers 1 at once there), a floor entered while a
+  fight holds its rooms.
+- Not while an event holds the field or the menus are banned
+  (`menu_ban`); it waits for the area's fade in to end.
+
+### The auto Fortune Wire
+
+The action button on a trapped box (base type 0x8000, menu 33 "Risky
+Treasure"):
+
+- With a Fortune Wire (13/0) in Kite's items, the wire is used first, as
+  from TARGET: its sound, `effRemoveTrap`, a popup "Used a Fortune Wire.
+  Disarmed trap." in the game's message window, `EntryAffect(box, plw,
+  12)`; then the box opens as an untrapped one.
+- With none, a warning in the game's dialog before the menu: "This box is
+  trapped. You have no Fortune Wire." with Open anyway / Leave it. Open
+  anyway goes on to the game's own menu 33.
+
+### The sprint toggle
+
+A button (the port's settings; by default L3, which the field does not
+read) toggles running: with it on, any push of the stick or the D-pad
+runs at full speed whatever the tilt, so a keyboard and the D-pad run too.
+A small mark in the game's style shows it on. In the Root Towns the run
+may go faster still (a setting, the town walk's speed scaled).
 
 ## The battle hotbar
 
@@ -44,11 +112,15 @@ camera's `camType` pages in field-ui.md "ControllerMenu"):
 
 Hold to open: **L2 for skills, R2 for spells.**
 
-- L2's view change is the field's least used button; it moves to L3.
-- R2 is the camera reset (A) or zoom out (B); it moves to R3. A click of a
-  stick is fine for a press now and then; it is poor for a hold, which is
-  why L3 and R3 are not the hotbar's.
-- The two can be changed in the port's settings, and the moves undone.
+- A tap keeps the button's own use; a hold (a setting, by default 8
+  frames) opens the bar. So L2 still changes the view and R2 still resets
+  (A) or zooms (B), on release of a tap. Nothing moves.
+- L3 and R3 stay free: a click of a stick is fine for a press now and then
+  and poor for a hold. L3 takes the sprint toggle.
+- The two can be changed in the port's settings.
+- The B types zoom while R2 is held, which a tap cannot give. With a B
+  type the spells' bar defaults to R3 held instead, or the player picks
+  another button.
 
 To be confirmed in play: that nothing in a battle, a boss's camera
 (`bosscam.rs` reads L2 and R2) or an event reads L2 or R2 in a way the

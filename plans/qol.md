@@ -26,12 +26,23 @@ beside the save (as `settings.toml` does).
 8. Dungeons and the gate: a floor's chests and portals counted, a run toggle
    and faster walking in the Root Towns, back to the Root Town from a
    cleared dungeon's last room, the Chaos Gate's recent and favourite words.
-9. Members: friendship levels shown.
-10. Presentation: widescreen and resolution (in part already:
-    `--render-scale`), full button remapping.
-11. Skipping in-engine event scenes (the script run fast, its flags all
+9. Members and the party: friendship levels shown; the last party invited
+   again at the Chaos Gate in one choice; which members want which items
+   in a trade.
+10. The .hack conveniences: logging in and out and the gate's transfer
+    shortened; a Data Drain's result shown before the drain; the Virus Cores
+    held against what each gate hack needs; the Grunty foods and the
+    evolutions they lead to, shown at feeding; Kite's equipment kept in sets
+    and changed in one press; an item that does not fit offered to the item
+    box; the camera's options (following behind Kite, speed, inverted
+    axes); items held past the stack limit, or a larger item box (a
+    setting).
+11. Presentation: widescreen without stretching, the menus and windows kept
+    in proportion, and resolution (in part already: `--render-scale`); full
+    button remapping.
+12. Skipping in-engine event scenes (the script run fast, its flags all
     set).
-12. Quick save and load anywhere.
+13. Quick save and load anywhere.
 
 The field map's changes come later.
 
@@ -42,12 +53,17 @@ low-HP warning; treasure, portals and the goal marked on the maps (the auto
 Fairy's Orb stands in); a gate history of cleared areas and treasure left;
 a "what next" hint from the event flags; an unread-mail badge in the field
 and a list of the story's mail; text size and window opacity; the assists
-(more experience or gold, no traps, easier Data Drain).
+(more experience or gold, no traps, easier Data Drain); anything taken from
+.hack//G.U. Last Recode (the four parts as one continuous game, a higher
+level cap, a photo mode); 60 fps with frames interpolated; skipping the
+intro and the logos.
 
 ## The field helpers
 
-All three are settings, on by default in the port's settings, and each
-goes through the game's own use of the item, so what it does, costs and
+Each can be turned on and off in the game's OPTION menu (a row of its
+own, in the menu's style, beside the game's rows) and is kept in
+`settings.toml`; all three are on in a fresh settings file. Each goes
+through the game's own use of the item, so what it does, costs and
 shows is the game's.
 
 ### The auto Fairy's Orb

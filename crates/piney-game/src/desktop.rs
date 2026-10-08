@@ -750,7 +750,6 @@ impl DesktopMode {
     }
 
     /// Whether a stream plays: the scripts' or an Audio screen movie.
-    #[cfg(test)]
     pub(crate) fn streaming(&self) -> bool {
         self.movie.is_some() || self.st.stream.is_some()
     }
@@ -880,6 +879,10 @@ impl Mode for DesktopMode {
 
     fn archive(&self) -> Option<Arc<Archive>> {
         self.movie.as_ref().map(|m| &m.0).or(self.st.stream.as_ref()).map(StreamPlayer::archive)
+    }
+
+    fn real_time(&self) -> bool {
+        self.streaming()
     }
 
     fn title(&self) -> String {

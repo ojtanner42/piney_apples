@@ -647,6 +647,7 @@ mod tests {
                 "import_card",
                 "pad_log",
                 "render_scale",
+                "speed",
                 "story",
                 "version",
                 "vsync"

@@ -232,7 +232,6 @@ impl WorldMode {
     }
 
     /// Whether the scripts play a stream.
-    #[cfg(test)]
     pub fn streaming(&self) -> bool {
         self.st.stream.player.is_some()
     }
@@ -1345,6 +1344,10 @@ impl Mode for WorldMode {
     /// While the scripts play a stream, its archive (the stream's pictures).
     fn archive(&self) -> Option<Arc<Archive>> {
         self.st.stream.player.as_ref().map(crate::stream::StreamPlayer::archive)
+    }
+
+    fn real_time(&self) -> bool {
+        self.streaming()
     }
 
     fn title(&self) -> String {

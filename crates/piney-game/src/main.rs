@@ -77,7 +77,11 @@ pad_log [FILE|stop]  write this run since power-on (pads, console commands, the 
 vsync [on|off]  the window waits for the display's refresh to show a picture (--no-vsync starts with it off)
 fps_cap [N]  at most N pictures a second, 0 for no cap (--fps-cap N); the game itself runs at its own rate either way
 render_scale [N]  draw at N times the PS2's resolution, 1 to 8 (--render-scale N)
-hud_scale [N]  the HUD at N of its size, 0.5 to 1, each part toward its corner (--hud-scale N)";
+hud_scale [N]  the HUD at N of its size, 0.5 to 1, each part toward its corner (--hud-scale N)
+speed [N]  the game at N times its speed, 1, 2 or 4 (--speed N; Tab steps through them)";
+
+/// The speeds Tab steps through ([`App::speed`]).
+const SPEEDS: [u32; 3] = [1, 2, 4];
 
 struct App {
     mode: Box<dyn Mode>,
@@ -99,6 +103,10 @@ struct App {
     hud_scale: f32,
     /// When the last picture was shown, for the cap.
     presented: Instant,
+    /// Not the game's: game frames run per vertical blank, 1 for the
+    /// game's own pace (`--speed`, the console's `speed`, Tab). Each frame
+    /// is still the same frame, so pad logs and replays hold.
+    speed: u32,
     /// Held until the window's device exists.
     assets: Option<Assets>,
     gs: Option<Gs>,
@@ -200,6 +208,14 @@ impl App {
                 Some(_) => return "hud_scale N, N from 0.5 to 1".into(),
             }
             return format!("hud_scale {}", self.hud_scale);
+        }
+        if w.first() == Some(&"speed") {
+            match w.get(1).map(|n| n.parse::<u32>()) {
+                Some(Ok(n)) if SPEEDS.contains(&n) => self.speed = n,
+                None => {}
+                Some(_) => return "speed N, N 1, 2 or 4".into(),
+            }
+            return format!("speed {}", self.speed);
         }
         if w.first() == Some(&"fps_cap") {
             match w.get(1).map(|n| n.parse::<u32>()) {
@@ -388,11 +404,13 @@ impl App {
     /// Run the game frames that are due, and draw the newest.
     fn tick(&mut self) {
         let now = Instant::now();
-        self.vblanks += (now - self.last).as_secs_f64() * VBLANK_HZ;
+        let speed = if self.mode.real_time() { 1 } else { self.speed };
+        self.vblanks += (now - self.last).as_secs_f64() * VBLANK_HZ * f64::from(speed);
         self.last = now;
         let rate = f64::from(self.mode.frame_rate().max(1));
+        let catch_up = MAX_CATCH_UP * speed;
         let mut steps = 0;
-        while self.vblanks >= rate && steps < MAX_CATCH_UP {
+        while self.vblanks >= rate && steps < catch_up {
             self.vblanks -= rate;
             steps += 1;
             let mut line = String::new();
@@ -489,14 +507,18 @@ impl App {
                 gs.render(&frame);
             }
         }
-        if steps == MAX_CATCH_UP {
+        if steps == catch_up {
             self.vblanks = self.vblanks.min(rate);
         }
         if steps > 0
             && let Some(w) = &self.win
         {
             // Where the game is: the console's `where`.
-            let title = if self.launching { "piney".to_string() } else { format!("piney - {}", self.volume.title()) };
+            let mut title =
+                if self.launching { "piney".to_string() } else { format!("piney - {}", self.volume.title()) };
+            if self.speed > 1 {
+                title += &format!(" (x{})", self.speed);
+            }
             w.window.set_title(&title);
         }
     }
@@ -615,6 +637,15 @@ impl ApplicationHandler for App {
                         }
                         return;
                     }
+                }
+                // Tab: the next speed.
+                if event.physical_key == PhysicalKey::Code(KeyCode::Tab) {
+                    if pressed && !event.repeat {
+                        let i = SPEEDS.iter().position(|&s| s == self.speed).map_or(0, |i| (i + 1) % SPEEDS.len());
+                        self.speed = SPEEDS[i];
+                        tracing::info!("speed x{}", self.speed);
+                    }
+                    return;
                 }
                 // Escape: the quit prompt, or back to the game from it.
                 if event.physical_key == PhysicalKey::Code(KeyCode::Escape) {
@@ -1090,6 +1121,7 @@ fn main() {
     let mut deflicker = false;
     let mut vsync = true;
     let mut fps_cap = 0u32;
+    let mut speed = 1u32;
     let mut render_scale = 1u32;
     let mut hud_scale = 1.0f32;
     let mut pad_log: Option<String> = None;
@@ -1151,6 +1183,7 @@ fn main() {
             "--deflicker" => deflicker = true,
             "--no-vsync" => vsync = false,
             "--fps-cap" => fps_cap = args.next().and_then(|n| n.parse().ok()).unwrap_or(0),
+            "--speed" => speed = args.next().and_then(|n| n.parse().ok()).filter(|n| SPEEDS.contains(n)).unwrap_or(1),
             "--render-scale" => render_scale = args.next().and_then(|n| n.parse::<u32>().ok()).unwrap_or(1).clamp(1, 8),
             "--hud-scale" => hud_scale = args.next().and_then(|n| n.parse::<f32>().ok()).unwrap_or(1.0).clamp(0.5, 1.0),
             "--dvd" => match args.peek() {
@@ -1189,7 +1222,7 @@ fn main() {
             "-V" | "--version" => return,
             "-h" | "--help" => {
                 println!(
-                    "piney-game [--iso PATH | --game DIR [--volume N]] [--mode MODE] [--no-events] [--mute] [--deflicker] [--no-vsync] [--fps-cap N] [--render-scale N] [--hud-scale N] [--dvd [SPEED]] [--voice en|jp] [--card DIR | --no-card] [--mail N,...] [--news N,...] [--pad-log FILE] [--replay FILE] [--import-card PATH] [--version]"
+                    "piney-game [--iso PATH | --game DIR [--volume N]] [--mode MODE] [--no-events] [--mute] [--deflicker] [--no-vsync] [--fps-cap N] [--speed N] [--render-scale N] [--hud-scale N] [--dvd [SPEED]] [--voice en|jp] [--card DIR | --no-card] [--mail N,...] [--news N,...] [--pad-log FILE] [--replay FILE] [--import-card PATH] [--version]"
                 );
                 println!(
                     "--iso PATH: a disc image, or a disc of a build (DIR/outbreak.disc); --game DIR: a piney-build build (by default {}), its launcher when it holds more than one disc; --volume 1-4 (inf, mut, out, qua): that disc of the build, no launcher",
@@ -1645,6 +1678,7 @@ fn main() {
         deflicker,
         vsync,
         fps_cap,
+        speed,
         render_scale,
         hud_scale,
         presented: Instant::now(),

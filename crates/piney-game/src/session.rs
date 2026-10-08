@@ -1235,6 +1235,17 @@ impl Mode for Session {
         }
     }
 
+    fn real_time(&self) -> bool {
+        match &self.stage {
+            Stage::Title(t) => t.movie.is_some() || t.stream.is_some(),
+            Stage::Desktop(d) => d.streaming(),
+            Stage::TopPage(t) => t.streaming(),
+            Stage::World(w) => w.streaming(),
+            Stage::Area(a) => a.streaming(),
+            Stage::Gone => false,
+        }
+    }
+
     fn title(&self) -> String {
         match &self.stage {
             Stage::Title(t) => match &t.stream {

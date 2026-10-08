@@ -530,10 +530,9 @@ impl AreaMode {
         self.setup
     }
 
-    /// Whether the scripts play a stream.
-    #[allow(dead_code)]
+    /// Whether the scripts play a stream, or a Data Drain its movie.
     pub fn streaming(&self) -> bool {
-        self.stream.player.is_some()
+        self.stream.player.is_some() || self.drain_movie.is_some()
     }
 
     /// The scene a stream playing here plays (or is about to), for tests.
@@ -1817,6 +1816,10 @@ impl Mode for AreaMode {
             "gofield" => self.world.go_field(),
             _ => false,
         }
+    }
+
+    fn real_time(&self) -> bool {
+        self.streaming()
     }
 
     fn title(&self) -> String {

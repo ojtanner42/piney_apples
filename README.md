@@ -175,6 +175,12 @@ it, 1 to 8. `--no-vsync` (`vsync off`) stops waiting for the display's
 refresh, and `--fps-cap N` (`fps_cap N`, 0 for none) limits the pictures a
 second. The game itself runs at its own rate whatever these are.
 
+**Tab** runs the game faster: twice, four times, then its own pace again
+(`--speed N`, `speed N` in the console, N 1, 2 or 4). The window's title
+shows the speed when it is not 1. Movies and cut scenes play at their own
+pace, with their sound. Each frame is still the game's own frame,
+so a pad log made at one speed replays the same at another.
+
 `--hud-scale N` (`hud_scale N` in the console, 0.5 to 1) draws the HUD
 smaller: the party panels toward the bottom left corner, the map toward the
 top right, the target's window toward the top left. Render scale does not

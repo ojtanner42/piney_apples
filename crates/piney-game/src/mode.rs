@@ -305,6 +305,12 @@ pub trait Mode {
         false
     }
 
+    /// A movie or a stream plays with its sound, which keeps the clock's
+    /// time: the port's speed ([`crate::App`]'s) holds at 1 meanwhile.
+    fn real_time(&self) -> bool {
+        false
+    }
+
     /// The thing [`ends`] promised has played through once.
     ///
     /// [`ends`]: Mode::ends

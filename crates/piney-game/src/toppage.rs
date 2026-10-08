@@ -97,7 +97,6 @@ impl TopPageMode {
     }
 
     /// Whether the scripts play a stream over the board.
-    #[cfg(test)]
     pub(crate) fn streaming(&self) -> bool {
         self.st.stream.is_some()
     }
@@ -188,6 +187,10 @@ impl Mode for TopPageMode {
 
     fn archive(&self) -> Option<Arc<Archive>> {
         self.st.stream.as_ref().map(crate::stream::StreamPlayer::archive)
+    }
+
+    fn real_time(&self) -> bool {
+        self.streaming()
     }
 
     fn title(&self) -> String {
